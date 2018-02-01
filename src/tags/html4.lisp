@@ -66,7 +66,7 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 	 for (key value . rest) on params by #'cddr
 	 do (etypecase key
               (string (write-string key href))
-              (symbol (write-string (string-downcase key) href))) 
+              (symbol (write-string (string-downcase key) href)))
 	 do (write-char #\= href)
 	 do (princ value href)
 	 when rest
@@ -137,7 +137,8 @@ http://www.w3.org/TR/xhtml1/#guidelines"
               onfocus
               tabindex
               type
-              value)
+              value
+              formmethod)
 
 (def-html-tag <:caption :core :event :i18n)
 
@@ -268,6 +269,7 @@ http://www.w3.org/TR/xhtml1/#guidelines"
                     checked
                     disabled
                     maxlength
+                    multiple
                     name
                     onblur
                     onchange
@@ -289,7 +291,7 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 
 (def-html-tag <:kbd :core :event :i18n)
 
-(def-html-tag <:label :core :event :i18n 
+(def-html-tag <:label :core :event :i18n
               accesskey
               for
               onblur
@@ -307,7 +309,9 @@ http://www.w3.org/TR/xhtml1/#guidelines"
                     media
                     rel
                     rev
-                    type)
+                    type
+                    integrity
+                    crossorigin)
 
 (def-html-tag <:map :core :event :i18n
               name)
@@ -477,15 +481,15 @@ http://www.w3.org/TR/xhtml1/#guidelines"
   (emit-empty-tag "embed" others))
 
 ;; Copyright (c) 2002-2005, Edward Marco Baringer
-;; All rights reserved. 
-;; 
+;; All rights reserved.
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions are
 ;; met:
-;; 
+;;
 ;;  - Redistributions of source code must retain the above copyright
 ;;    notice, this list of conditions and the following disclaimer.
-;; 
+;;
 ;;  - Redistributions in binary form must reproduce the above copyright
 ;;    notice, this list of conditions and the following disclaimer in the
 ;;    documentation and/or other materials provided with the distribution.
@@ -493,7 +497,7 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 ;;  - Neither the name of Edward Marco Baringer, nor BESE, nor the names
 ;;    of its contributors may be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
