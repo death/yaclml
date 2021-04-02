@@ -65,7 +65,7 @@
 (def-attribute-handler tal::let (tag)
   "Extend environment with a given list of bindings, as for LET form."
   (let ((bindings
-         (loop
+          (loop
             for (name value) in (read-tal-expression-from-string (getf (cdar tag) 'tal::let))
             collect `(cons ',name ,value))))
     (remf (cdar tag) 'tal::let)
@@ -89,17 +89,17 @@
     (with-collector (augmented-env)
       ;; 1) grab all the attribute params
       (loop
-	 for (param value) on (cdar tag) by #'cddr
-	 if (eql (find-package :it.bese.yaclml.tal.include-params)
-                 (symbol-package param))
-	   do (augmented-env `(quote ,(intern (string param) *expression-package*))
-                             (read-tal-expression-from-string value))
-	 else
-	   do (warn "Ignoring attribute in TAL:INCLUDE: ~S (~S)." param (symbol-package param)))
+	for (param value) on (cdar tag) by #'cddr
+	if (eql (find-package :it.bese.yaclml.tal.include-params)
+                (symbol-package param))
+	do (augmented-env `(quote ,(intern (string param) *expression-package*))
+                          (read-tal-expression-from-string value))
+	else
+	do (warn "Ignoring attribute in TAL:INCLUDE: ~S (~S)." param (symbol-package param)))
       ;; 2) grab all the body params
       (dolist (child (cdr tag))
         (unless (stringp child)
-          (destructuring-bind ((param-name) . body) 
+          (destructuring-bind ((param-name) . body)
               child
             (if (eql (find-package :it.bese.yaclml.tal.include-params)
                      (symbol-package param-name))
@@ -123,15 +123,15 @@
     (transform-lxml-form tag)))
 
 ;; Copyright (c) 2002-2005, Edward Marco Baringer
-;; All rights reserved. 
-;; 
+;; All rights reserved.
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions are
 ;; met:
-;; 
+;;
 ;;  - Redistributions of source code must retain the above copyright
 ;;    notice, this list of conditions and the following disclaimer.
-;; 
+;;
 ;;  - Redistributions in binary form must reproduce the above copyright
 ;;    notice, this list of conditions and the following disclaimer in the
 ;;    documentation and/or other materials provided with the distribution.
@@ -139,7 +139,7 @@
 ;;  - Neither the name of Edward Marco Baringer, nor BESE, nor the names
 ;;    of its contributors may be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
@@ -151,4 +151,3 @@
 ;; THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ;; (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 ;; OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-

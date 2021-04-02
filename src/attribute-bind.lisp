@@ -19,7 +19,7 @@
 
 ATTRIBUTE-SPEC has the following form:
 
- ( required-args* [ &attribute attributes* ] 
+ ( required-args* [ &attribute attributes* ]
                   [ &allow-other-attributes others ]
                   [ &allow-custom-attributes customs ]
                   [ &body body ] )
@@ -57,48 +57,48 @@ in LIST after attribute parsing is complete."
                                          (list custom-attributes)
                                          (list body-var)))
            ,@(when body-var
-              `((declare (ignorable ,body-var))))
+               `((declare (ignorable ,body-var))))
            ,@(loop
-                for local in locals
-                collect `(setf ,local (pop ,attribute-values)))
+               for local in locals
+               collect `(setf ,local (pop ,attribute-values)))
            (setf ,attribute-values
                  (iter (for el :in ,attribute-values)
-                       (cond ((and (listp el)
-                                   (symbolp (first el))
-                                   (string= "@" (first el)))
-                              ,(if custom-attributes
-                                   `(setf ,custom-attributes
-                                          (append ,custom-attributes
-                                                  (if (cddr el)
-                                                      (rest el)
-                                                      (list (make-runtime-attribute-list-reference
-                                                             :form (second el))))))
-                                   `(error 'illegal-attribute-use :attribute-type "custom")))
-                             (t (collect el)))))
+                   (cond ((and (listp el)
+                               (symbolp (first el))
+                               (string= "@" (first el)))
+                          ,(if custom-attributes
+                               `(setf ,custom-attributes
+                                      (append ,custom-attributes
+                                              (if (cddr el)
+                                                  (rest el)
+                                                  (list (make-runtime-attribute-list-reference
+                                                         :form (second el))))))
+                               `(error 'illegal-attribute-use :attribute-type "custom")))
+                         (t (collect el)))))
            (iterate
-            (while (and (consp ,attribute-values)
-                        (keywordp (car ,attribute-values))))
-            (let ((,element (pop ,attribute-values)))
-              (case ,element
-                ,@(loop
+             (while (and (consp ,attribute-values)
+                         (keywordp (car ,attribute-values))))
+             (let ((,element (pop ,attribute-values)))
+               (case ,element
+                 ,@(loop
                      for attr in attrs
                      ;; NB: ATTR is (symbol-to-bind-to default-value),
                      ;; we want to match against the keyword whose
                      ;; string name is (symbol-name symbol-to-bind-to),
                      ;; hence the intern.
                      collect `(,(intern (string (car attr)) :keyword) (setf ,(car attr) (pop ,attribute-values))))
-                ,@(loop
+                 ,@(loop
                      for flag in flags
                      collect `(,(intern (string flag) :keyword) (setf ,flag t)))
-                (t
-                 ,(if other-attributes
-                      `(progn
-                         (push ,element ,other-attributes)
-                         (push (pop ,attribute-values) ,other-attributes))
-                      `(error 'unrecognized-attribute :attribute ,element))))))
+                 (t
+                  ,(if other-attributes
+                       `(progn
+                          (push ,element ,other-attributes)
+                          (push (pop ,attribute-values) ,other-attributes))
+                       `(error 'unrecognized-attribute :attribute ,element))))))
            ,(when (null body-var)
               `(when ,attribute-values
-                (warn "Ignoring extra elements in body: ~S" ,attribute-values)))
+                 (warn "Ignoring extra elements in body: ~S" ,attribute-values)))
            ,(when body-var
               `(setf ,body-var ,attribute-values))
            ,(when other-attributes
@@ -172,15 +172,15 @@ in LIST after attribute parsing is complete."
           other-attributes custom-attributes body-var)))
 
 ;; Copyright (c) 2002-2005, Edward Marco Baringer
-;; All rights reserved. 
-;; 
+;; All rights reserved.
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions are
 ;; met:
-;; 
+;;
 ;;  - Redistributions of source code must retain the above copyright
 ;;    notice, this list of conditions and the following disclaimer.
-;; 
+;;
 ;;  - Redistributions in binary form must reproduce the above copyright
 ;;    notice, this list of conditions and the following disclaimer in the
 ;;    documentation and/or other materials provided with the distribution.
@@ -188,7 +188,7 @@ in LIST after attribute parsing is complete."
 ;;  - Neither the name of Edward Marco Baringer, nor BESE, nor the names
 ;;    of its contributors may be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR

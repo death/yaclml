@@ -70,7 +70,7 @@
 ;;;-----------------------------------------------------------------------------
 ;;; CONDITIONS
 ;;;-----------------------------------------------------------------------------
-(define-condition xml-parse-error (error) 
+(define-condition xml-parse-error (error)
   ((offset :accessor offset :initform nil :initarg :offset)
    (message :accessor message :initform nil :initarg :message))
   (:report (lambda (c s)
@@ -99,7 +99,7 @@
 ;;;-----------------------------------------------------------------------------
 (defun make-node (&key name ns attrs child children)
   "Convenience function for creating a new xml node."
-  (cons (cons (if ns 
+  (cons (cons (if ns
                   (cons name ns)
                   name)
               attrs)
@@ -127,34 +127,34 @@
         (setf (caar elem) (cons (caar elem) ns))
         ns)))
 
-(defun node-attrs (elem) 
+(defun node-attrs (elem)
   (cdar elem))
 
-(defun (setf node-attrs) (attrs elem) 
+(defun (setf node-attrs) (attrs elem)
   (setf (cdar elem) attrs))
 
 (defun node-children (elem)
   (cddr elem))
 
-(defun (setf node-children) (children elem) 
+(defun (setf node-children) (children elem)
   (setf (cdr elem) children)
   (node-children elem))
 
 ;;;-----------------------------------------------------------------------------
 ;;; UTILITY FUNCTIONS
 ;;;-----------------------------------------------------------------------------
-  
+
 (defun entity-of (char)
   "Returns the xml entity corresponding to CHAR, without the leading
 ampersand. Returns NIL if not found."
   (declare (type list *entities*))
-  (first (find char *entities* 
-	       :test #'char= 
+  (first (find char *entities*
+	       :test #'char=
 	       :key (lambda (e) (second e)))))
 
 (defun entitify (object)
-  "Converts OBJECT to its string representation, if necessary, and then replaces 
-the characters of OBJECT with their corresponding entities. Assumes that the 
+  "Converts OBJECT to its string representation, if necessary, and then replaces
+the characters of OBJECT with their corresponding entities. Assumes that the
 characters of RESERVED have been registered in the entity table."
   (let ((str (typecase object
                (string (coerce object 'simple-base-string))
@@ -226,10 +226,10 @@ goes (assuming *convert-entities* is non-NIL)."
             (not *convert-entities*))
         c
         (loop with ent = (make-extendable-string 5)
-           for char = (read-char stream)
-           do (push-string char ent)
-           until (char= char #\;)
-           finally (return (resolve-entity (coerce ent 'simple-string)))))))
+              for char = (read-char stream)
+              do (push-string char ent)
+              until (char= char #\;)
+              finally (return (resolve-entity (coerce ent 'simple-string)))))))
 
 (define-symbol-macro next-char (peek-stream (state-stream s)))
 
@@ -240,14 +240,14 @@ goes (assuming *convert-entities* is non-NIL)."
 (defmacro match (&rest matchers)
   "Attempts to match the next input character with one of the supplied matchers."
   `(let ((c (peek-stream (state-stream s))))
-    (and
-     (or ,@(loop for m in matchers
-                 collect (etypecase m
-                           (standard-char `(char= ,m c))
-                           (symbol `(,m c)))))
-     ;; cheat here a little bit - eat entire char entity instead
-     ;; of peeked char
-     (read-stream (state-stream s)))))
+     (and
+      (or ,@(loop for m in matchers
+                  collect (etypecase m
+                            (standard-char `(char= ,m c))
+                            (symbol `(,m c)))))
+      ;; cheat here a little bit - eat entire char entity instead
+      ;; of peeked char
+      (read-stream (state-stream s)))))
 
 (defmacro match-seq (&rest sequence)
   "Tries to match the supplied matchers in sequence with characters in the input stream."
@@ -257,23 +257,23 @@ goes (assuming *convert-entities* is non-NIL)."
 (defmacro match* (&rest sequence)
   "Matches any occurances of any of the supplied matchers."
   `(loop with data = (make-extendable-string 10)
-    for c = (match ,@sequence)
-    while c
-    do (push-string c data)
-    finally (return data)))
+         for c = (match ,@sequence)
+         while c
+         do (push-string c data)
+         finally (return data)))
 
 (defmacro match+ (&rest sequence)
   "Matches one or more occurances of any of the supplied matchers."
   `(and (peek ,@sequence)
-    (match* ,@sequence)))
+        (match* ,@sequence)))
 
 (defmacro peek (&rest matchers)
   "Looks ahead for an occurance of any of the supplied matchers."
   `(let ((c (peek-stream (state-stream s))))
-    (or ,@(loop for m in matchers
-                collect (etypecase m
-                          (standard-char `(char= ,m c))
-                          (symbol `(,m c)))))))
+     (or ,@(loop for m in matchers
+                 collect (etypecase m
+                           (standard-char `(char= ,m c))
+                           (symbol `(,m c)))))))
 
 (defmacro must ((error-type &rest error-args) &rest body)
   "Throws a parse error if the supplied forms do not succeed."
@@ -319,8 +319,8 @@ goes (assuming *convert-entities* is non-NIL)."
   "Maps the ns prefix to its associated url via the supplied ns env."
   (setf (node-name elem) (intern-xml-name (node-name elem) (node-ns elem) env))
   (loop
-     for attr on (node-attrs elem) by #'cddr
-     do (setf (car attr) (intern-xml-name (caar attr) (cdar attr) env)))
+    for attr on (node-attrs elem) by #'cddr
+    do (setf (car attr) (intern-xml-name (caar attr) (cdar attr) env)))
   t)
 
 ;;;-----------------------------------------------------------------------------
@@ -329,12 +329,12 @@ goes (assuming *convert-entities* is non-NIL)."
 (defmacro defmatch (name &rest body)
   "Match definition macro that provides a common lexical environment for matchers."
   `(defun ,name (c)
-    ,@body))
-  
+     ,@body))
+
 (defmacro defrule (name &rest body)
   "Rule definition macro that provides a common lexical environment for rules."
   `(defun ,name (s)
-    ,@body))
+     ,@body))
 
 (defmacro matchfn (name)
   "Convenience macro for creating an anonymous function wrapper around a matcher macro."
@@ -376,14 +376,14 @@ goes (assuming *convert-entities* is non-NIL)."
     (t nil)))
 
 (defmatch namechar ()
-  (or 
+  (or
    (and c (alpha-char-p c))
    (and c (digit-char-p c))
    (case c
      ((#\. #\- #\_ #\:) t))))
 
 (defmatch ncname-char ()
-  (or 
+  (or
    (and c (alpha-char-p c))
    (and c (digit-char-p c))
    (case c
@@ -443,9 +443,9 @@ goes (assuming *convert-entities* is non-NIL)."
          (match #\'))))
       t)
      (if (string= "xmlns" name)
-         (cons 'nsdecl (cons suffix val)) 
+         (cons 'nsdecl (cons suffix val))
          (list
-          'attr 
+          'attr
           (if suffix
               (cons suffix name)
               (cons name nil))
@@ -517,26 +517,26 @@ goes (assuming *convert-entities* is non-NIL)."
              (and
               (match-seq #\[ #\C #\D #\A #\T #\A #\[)
               (loop with data = (make-extendable-string 50)
-                 with state = 0
-                 do (case state
-                      (0 (if (match #\])
-                             (incf state)
-                             (push-string (eat) data)))
-                      (1 (if (match #\])
-                             (incf state)
-                             (progn 
-                               (setf state 0)
-                               (push-string #\] data)
-                               (push-string (eat) data))))
-                      (2 (if (match #\>)
-                             (incf state)
-                             (progn 
-                               (setf state 0)
-                               (push-string #\] data)
-                               (push-string #\] data)
-                               (push-string (eat) data)))))
-                 until (eq state 3)
-                 finally (return (make-element :type 'cdata :val data))))))))
+                    with state = 0
+                    do (case state
+                         (0 (if (match #\])
+                                (incf state)
+                                (push-string (eat) data)))
+                         (1 (if (match #\])
+                                (incf state)
+                                (progn
+                                  (setf state 0)
+                                  (push-string #\] data)
+                                  (push-string (eat) data))))
+                         (2 (if (match #\>)
+                                (incf state)
+                                (progn
+                                  (setf state 0)
+                                  (push-string #\] data)
+                                  (push-string #\] data)
+                                  (push-string (eat) data)))))
+                    until (eq state 3)
+                    finally (return (make-element :type 'cdata :val data))))))))
 
 (declaim (ftype function element))     ; forward decl for content rule
 (defrule content ()
@@ -623,7 +623,7 @@ goes (assuming *convert-entities* is non-NIL)."
             (make-element :type 'doctype)))))
 
 (defrule misc ()
-  (or 
+  (or
    (ws s)
    (and (match #\<) (must (xml-parse-error :offset (file-position (state-stream s)))
                           (or (processing-instruction s)

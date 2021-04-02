@@ -7,7 +7,7 @@
 (defmacro with-tal-compilation-unit (pathname &body body)
   (rebinding (pathname)
     `(let ((*tal-truename* (truename ,pathname)))
-      ,@body)))
+       ,@body)))
 
 (defun read-tal-file-into-string (pathname)
   (read-string-from-file pathname :external-format :utf-8))
@@ -59,11 +59,11 @@ See alse: TAL-ENV"
   "Return the value associated with NAME in the environment
   ENV. ENV is represetend as a list of binding sets."
   (loop
-     for bind-set in env
-     do (multiple-value-bind (value found-p)
-            (fetch-tal-value name bind-set)
-          (when found-p
-            (return-from lookup-tal-variable (values value t)))))
+    for bind-set in env
+    do (multiple-value-bind (value found-p)
+           (fetch-tal-value name bind-set)
+         (when found-p
+           (return-from lookup-tal-variable (values value t)))))
   (values nil nil))
 
 (define-condition setf-tal-variable-error (error)
@@ -71,42 +71,42 @@ See alse: TAL-ENV"
    (environment :initarg :environment))
   (:report (lambda (c s)
 	     (format s "Error setting the tal variable ~S~:[.~; in the environment ~S.~]"
-		       (slot-value c 'variable-name)
-		       (slot-boundp c 'environment)
-		       (slot-value c 'environment)))))
+		     (slot-value c 'variable-name)
+		     (slot-boundp c 'environment)
+		     (slot-value c 'environment)))))
 
 (define-condition unfound-tal-variable (setf-tal-variable-error)
   ()
   (:report (lambda (c s)
 	     (format s "Attempting to set unknown tal variable ~S~:[.~; in the environment ~S.~]"
-		       (slot-value c 'variable-name)
-		       (slot-boundp c 'environment)
-		       (slot-value c 'environment)))))
+		     (slot-value c 'variable-name)
+		     (slot-boundp c 'environment)
+		     (slot-value c 'environment)))))
 
 (define-condition unsettable-tal-variable (setf-tal-variable-error)
   ()
   (:report (lambda (c s)
 	     (format s "The tal variable ~S is unsettable~:[.~; in the environment ~S.~]"
-		       (slot-value c 'variable-name)
-		       (slot-boundp c 'environment)
-		       (slot-value c 'environment)))))
+		     (slot-value c 'variable-name)
+		     (slot-boundp c 'environment)
+		     (slot-value c 'environment)))))
 
 (defmethod (setf lookup-tal-variable) (value name (env list))
   (loop
-     for bind-set in env
-     do (multiple-value-bind (old-value found-p)
-            (fetch-tal-value name bind-set)
-	  (declare (ignore old-value))
-          (when found-p
-	    (return-from lookup-tal-variable
-	      (setf (fetch-tal-value name bind-set) value)))))
+    for bind-set in env
+    do (multiple-value-bind (old-value found-p)
+           (fetch-tal-value name bind-set)
+	 (declare (ignore old-value))
+         (when found-p
+	   (return-from lookup-tal-variable
+	     (setf (fetch-tal-value name bind-set) value)))))
   (error 'unfound-tal-variable :variable-name name :environment env))
 
 (defun tal-env (&rest pairs)
   "Creates a fresh tal environment from the plist PAIRS."
   (list
    (iterate (for (key value) :on pairs :by #'cddr)
-            (collect (cons key value)))))
+     (collect (cons key value)))))
 
 ;;;; Assoc list binding set
 
@@ -142,15 +142,15 @@ See alse: TAL-ENV"
   (setf (gethash name ht) value))
 
 ;; Copyright (c) 2002-2005, Edward Marco Baringer
-;; All rights reserved. 
-;; 
+;; All rights reserved.
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions are
 ;; met:
-;; 
+;;
 ;;  - Redistributions of source code must retain the above copyright
 ;;    notice, this list of conditions and the following disclaimer.
-;; 
+;;
 ;;  - Redistributions in binary form must reproduce the above copyright
 ;;    notice, this list of conditions and the following disclaimer in the
 ;;    documentation and/or other materials provided with the distribution.
@@ -158,7 +158,7 @@ See alse: TAL-ENV"
 ;;  - Neither the name of Edward Marco Baringer, nor BESE, nor the names
 ;;    of its contributors may be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR

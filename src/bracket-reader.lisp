@@ -16,13 +16,13 @@ simply evaluates FORM and ignore the result."
   (declare (ignore char))
   (with-collector (forms)
     (loop
-       for char = (read-char stream t nil t)
-       do (case char
-            (#\\ (forms (read-char stream t nil t)))
-            (#\] (return-from |[ reader| `(yaclml-quote ,@(forms))))
-            (#\$ (forms (read stream t nil t)))
-            (#\~ (forms `(<:as-html ,(read stream t nil t))))
-            (t (forms char))))))
+      for char = (read-char stream t nil t)
+      do (case char
+           (#\\ (forms (read-char stream t nil t)))
+           (#\] (return-from |[ reader| `(yaclml-quote ,@(forms))))
+           (#\$ (forms (read stream t nil t)))
+           (#\~ (forms `(<:as-html ,(read stream t nil t))))
+           (t (forms char))))))
 
 (defvar *readers* '())
 
@@ -34,15 +34,15 @@ simply evaluates FORM and ignore the result."
   (setf *readtable* (copy-readtable nil nil)))
 
 ;; Copyright (c) 2002-2005, Edward Marco Baringer
-;; All rights reserved. 
-;; 
+;; All rights reserved.
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions are
 ;; met:
-;; 
+;;
 ;;  - Redistributions of source code must retain the above copyright
 ;;    notice, this list of conditions and the following disclaimer.
-;; 
+;;
 ;;  - Redistributions in binary form must reproduce the above copyright
 ;;    notice, this list of conditions and the following disclaimer in the
 ;;    documentation and/or other materials provided with the distribution.
@@ -50,7 +50,7 @@ simply evaluates FORM and ignore the result."
 ;;  - Neither the name of Edward Marco Baringer, nor BESE, nor the names
 ;;    of its contributors may be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR

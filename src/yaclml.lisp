@@ -60,7 +60,7 @@
 ;;;;   ;; Assuming *yaclml-stream* is bound to *standard-output*
 
 ;;;;   (<:a :href \"http://foo.com\" \"foo.com\")
-;;;;   => 
+;;;;   =>
 ;;;;   <a href=\"http://foo.com\">foo.com</a>
 
 ;;;;   (<:br)
@@ -134,7 +134,7 @@
     (if (yaclml-constant-p item)
         (push (escape-as-html (princ-to-string item)) %yaclml-code%)
         (push `(emit-attribute-value ,item) %yaclml-code%))))
-  
+
 (defun emit-code (&rest forms)
   "Emit to the current yaclml-code CODE. This means that whatever
    CODE is it will be run, and it's result will be ignored, at
@@ -144,19 +144,19 @@
 (defmacro emit-attribute (name value)
   (rebinding (value)
     `(case ,value
-      ((t)
-       (princ #\Space *yaclml-stream*)
-       (princ ,name *yaclml-stream*)
-       (princ "=\"" *yaclml-stream*)
-       (princ ,name *yaclml-stream*)
-       (princ #\" *yaclml-stream*))
-      ((nil) nil)
-      (t
-       (princ #\Space *yaclml-stream*)
-       (princ ,name *yaclml-stream*)
-       (princ "=\"" *yaclml-stream*)
-       (emit-attribute-value ,value)
-       (princ #\" *yaclml-stream*)))))
+       ((t)
+        (princ #\Space *yaclml-stream*)
+        (princ ,name *yaclml-stream*)
+        (princ "=\"" *yaclml-stream*)
+        (princ ,name *yaclml-stream*)
+        (princ #\" *yaclml-stream*))
+       ((nil) nil)
+       (t
+        (princ #\Space *yaclml-stream*)
+        (princ ,name *yaclml-stream*)
+        (princ "=\"" *yaclml-stream*)
+        (emit-attribute-value ,value)
+        (princ #\" *yaclml-stream*)))))
 
 (defun emit-princ-attribute (name value)
   (unless (stringp name)
@@ -164,21 +164,21 @@
   (emit-code
    (rebinding (value)
      `(case ,value
-       ((t)
-        (princ ,(concatenate 'string " " name "=\"" name "\"")
-         *yaclml-stream*))
-       ((nil) nil)
-       (t
-        (princ ,(concatenate 'string " " name "=\"") *yaclml-stream*)
-        (emit-attribute-value ,value)
-        (princ "\"" *yaclml-stream*))))))
+        ((t)
+         (princ ,(concatenate 'string " " name "=\"" name "\"")
+                *yaclml-stream*))
+        ((nil) nil)
+        (t
+         (princ ,(concatenate 'string " " name "=\"") *yaclml-stream*)
+         (emit-attribute-value ,value)
+         (princ "\"" *yaclml-stream*))))))
 
 (defun emit-attribute-value (value)
   (if (listp value)
       (iter (for el in value)
-            (unless (first-time-p)
-              (princ #\Space *yaclml-stream*))
-            (write-as-html (princ-to-string el) :stream *yaclml-stream*))
+        (unless (first-time-p)
+          (princ #\Space *yaclml-stream*))
+        (write-as-html (princ-to-string el) :stream *yaclml-stream*))
       (write-as-html (princ-to-string value) :stream *yaclml-stream*)))
 
 (defun emit-princ-attributes (attributes)
@@ -192,36 +192,36 @@ If the value of any of the attributes is NIL it will be ignored.
 If a value is the symbol T the name of the attribute will be used
 as the value."
   (iter (while attributes)
-        (for key = (pop attributes))
-        (if (runtime-attribute-list-reference-p key)
-            (emit-code `(iter (for (name value) :on ,(ralr-form key) :by #'cddr)
-                              (unless (stringp name)
-                                (setf name (string-downcase (string name))))
-                              (emit-attribute name value)))
-            (let ((value (pop attributes)))
-              (cond
-                ((eql t value)
-                 ;; according to xhtml thoses attributes which in html are
-                 ;; specified without a value should just use the attribute
-                 ;; name as the xhtml value
-                 (emit-princ " " key "=\"" key "\""))
-                ((eql nil value) nil)
-                ((yaclml-constant-p value)
+    (for key = (pop attributes))
+    (if (runtime-attribute-list-reference-p key)
+        (emit-code `(iter (for (name value) :on ,(ralr-form key) :by #'cddr)
+                      (unless (stringp name)
+                        (setf name (string-downcase (string name))))
+                      (emit-attribute name value)))
+        (let ((value (pop attributes)))
+          (cond
+            ((eql t value)
+             ;; according to xhtml thoses attributes which in html are
+             ;; specified without a value should just use the attribute
+             ;; name as the xhtml value
+             (emit-princ " " key "=\"" key "\""))
+            ((eql nil value) nil)
+            ((yaclml-constant-p value)
+             (progn
+               (emit-princ " " key "=\"")
+               (emit-html value)
+               (emit-princ "\"")))
+            (t
+             (if (and (consp value)
+                      (eql 'cl:concatenate (first value))
+                      (consp (cdr value))
+                      (eql 'cl:string (second value)))
+                 ;; a call to concatenate can be dealt with specially
                  (progn
                    (emit-princ " " key "=\"")
-                   (emit-html value)
-                   (emit-princ "\"")))
-                (t
-                 (if (and (consp value)
-                          (eql 'cl:concatenate (first value))
-                          (consp (cdr value))
-                          (eql 'cl:string (second value)))
-                     ;; a call to concatenate can be dealt with specially
-                     (progn
-                       (emit-princ " " key "=\"")
-                       (dolist (val (cddr value))
-                         (emit-princ val)))
-                     (emit-princ-attribute key value)))))))
+                   (dolist (val (cddr value))
+                     (emit-princ val)))
+                 (emit-princ-attribute key value)))))))
   %yaclml-code%)
 
 (defun emit-indentation ()
@@ -327,7 +327,7 @@ will be executed at runtime."
                                    `(write-string ,form *yaclml-stream*)
 				   form))
                              (fold-strings %yaclml-code%))
-             (values)))))))
+                   (values)))))))
 
 (defmacro deftag-macro (name attributes &body body)
   "Define a new YACLML tag macro.
@@ -363,9 +363,9 @@ and just wrap the body in an xml tag."
 (defmacro wrap-in-tag ((tag-name &rest tag-attributes) &body body)
   (with-unique-names (tname)
     `(let ((,tname ,(string-downcase (string tag-name))))
-      (emit-open-tag ,tname ,tag-attributes)
+       (emit-open-tag ,tname ,tag-attributes)
        (prog1
-          (progn ,@body)
+           (progn ,@body)
          (emit-close-tag ,tname)))))
 
 (defvar *xml-reader-open-char* #\<)
@@ -417,8 +417,8 @@ normal lisp code. See enable-xml-syntax for more details."
          (progn
            (unread-char char s)
            (setf symbol (with-standard-io-syntax ; turn ourselves off
-                            (let ((*package* fake-package))
-                              (read s t nil t))))
+                          (let ((*package* fake-package))
+                            (read s t nil t))))
            (setf symbol-name (string-downcase (symbol-name symbol))))
       (delete-package fake-package))
     ;;(format t "Read in symbol ~S, symbol-package is ~S~%" symbol (symbol-package symbol)) ; TODO debug code
@@ -475,17 +475,17 @@ normal lisp code. See enable-xml-syntax for more details."
                     (setf close-code %yaclml-code%))
                   (if rebind-tag-name-p
                       (emit-code `(let ((,tag-name ,original-tag-name))
-                                   ,@(emitter open-code)
-                                   ,@(emitter body-code)
-                                   ,@(emitter close-code)))
+                                    ,@(emitter open-code)
+                                    ,@(emitter body-code)
+                                    ,@(emitter close-code)))
                       (emit-code `(progn
-                                   ,@(emitter open-code)
-                                   ,@(emitter body-code)
-                                   ,@(emitter close-code)))))
+                                    ,@(emitter open-code)
+                                    ,@(emitter body-code)
+                                    ,@(emitter close-code)))))
                 (emit-empty-tag tag-name other-attributes)))
           `(progn
-            ,@(emitter %yaclml-code%)
-            (values)))))))
+             ,@(emitter %yaclml-code%)
+             (values)))))))
 
 (defun with-xml-syntax ()
   (lambda (handler)
@@ -493,15 +493,15 @@ normal lisp code. See enable-xml-syntax for more details."
     `(progn ,@(funcall handler))))
 
 ;; Copyright (c) 2002-2005, Edward Marco Baringer
-;; All rights reserved. 
-;; 
+;; All rights reserved.
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions are
 ;; met:
-;; 
+;;
 ;;  - Redistributions of source code must retain the above copyright
 ;;    notice, this list of conditions and the following disclaimer.
-;; 
+;;
 ;;  - Redistributions in binary form must reproduce the above copyright
 ;;    notice, this list of conditions and the following disclaimer in the
 ;;    documentation and/or other materials provided with the distribution.
@@ -509,7 +509,7 @@ normal lisp code. See enable-xml-syntax for more details."
 ;;  - Neither the name of Edward Marco Baringer, nor BESE, nor the names
 ;;    of its contributors may be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR

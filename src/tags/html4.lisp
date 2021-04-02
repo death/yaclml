@@ -37,22 +37,22 @@ http://www.w3.org/TR/xhtml1/#guidelines"
   (let ((effective-attributes (make-effective-attributes attributes)))
     (with-unique-names (custom-attributes)
       `(deftag ,name (&attribute ,@effective-attributes
-                      &allow-custom-attributes ,custom-attributes)
+                                 &allow-custom-attributes ,custom-attributes)
          (emit-empty-tag ,(string-downcase (symbol-name name))
                          (list ,@(iter (for attr :in effective-attributes)
-                                       (collect (string-downcase (symbol-name attr)))
-                                       (collect attr)))
+                                   (collect (string-downcase (symbol-name attr)))
+                                   (collect attr)))
                          ,custom-attributes)))))
 
 (defmacro def-html-tag (name &rest attributes)
   (let ((effective-attributes (make-effective-attributes attributes)))
     (with-unique-names (custom-attributes)
       `(deftag ,name (&attribute ,@effective-attributes
-                      &allow-custom-attributes ,custom-attributes &body body)
+                                 &allow-custom-attributes ,custom-attributes &body body)
          (emit-open-tag ,(string-downcase (symbol-name name))
                         (list ,@(iter (for attr :in effective-attributes)
-                                      (collect (string-downcase (symbol-name attr)))
-                                      (collect attr)))
+                                  (collect (string-downcase (symbol-name attr)))
+                                  (collect attr)))
                         ,custom-attributes)
          (emit-body body)
          (emit-close-tag ,(string-downcase (symbol-name name)))))))
@@ -63,34 +63,34 @@ http://www.w3.org/TR/xhtml1/#guidelines"
     (when params
       (write-char #\? href)
       (loop
-	 for (key value . rest) on params by #'cddr
-	 do (etypecase key
-              (string (write-string key href))
-              (symbol (write-string (string-downcase key) href)))
-	 do (write-char #\= href)
-	 do (princ value href)
-	 when rest
-	 do (write-char #\& href)))))
+	for (key value . rest) on params by #'cddr
+	do (etypecase key
+             (string (write-string key href))
+             (symbol (write-string (string-downcase key) href)))
+	do (write-char #\= href)
+	do (princ value href)
+	when rest
+	do (write-char #\& href)))))
 
 ;;;; * All HTML4 tags
 
 ;;;; This list taken from http://www.wdvl.com/Authoring/HTML/4/Tags
 
 (def-html-tag <:a :core :i18n :event
-              accesskey
-              charset
-              coords
-              href
-              hreflang
-              name
-              onblur
-              onfocus
-              rel
-              rev
-              shape
-              tabindex
-              target
-              type)
+  accesskey
+  charset
+  coords
+  href
+  hreflang
+  name
+  onblur
+  onfocus
+  rel
+  rev
+  shape
+  tabindex
+  target
+  type)
 
 (def-html-tag <:abbr :core :event :i18n)
 
@@ -99,46 +99,46 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 (def-html-tag <:address :core :event :i18n)
 
 (def-empty-html-tag <:area :core :event :i18n
-                    alt
-                    accesskey
-                    coords
-                    href
-                    nohref
-                    onblur
-                    onfocus
-                    shape
-                    tabindex)
+  alt
+  accesskey
+  coords
+  href
+  nohref
+  onblur
+  onfocus
+  shape
+  tabindex)
 
 (def-html-tag <:b :core :event :i18n)
 
 (def-empty-html-tag <:base href)
 
 (def-html-tag <:bdo :i18n
-              id
-              style
-              title)
+  id
+  style
+  title)
 
 (def-html-tag <:big :core :event :i18n)
 
 (def-html-tag <:blockquote :core :event :i18n
-              cite)
+  cite)
 
 (def-html-tag <:body :core :i18n :event
-              onload
-              onunload)
+  onload
+  onunload)
 
 (def-empty-html-tag <:br :core)
 
 (def-html-tag <:button :core :event :i18n
-              accesskey
-              disabled
-              name
-              onblur
-              onfocus
-              tabindex
-              type
-              value
-              formmethod)
+  accesskey
+  disabled
+  name
+  onblur
+  onfocus
+  tabindex
+  type
+  value
+  formmethod)
 
 (def-html-tag <:caption :core :event :i18n)
 
@@ -147,26 +147,26 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 (def-html-tag <:code :core :event :i18n)
 
 (def-empty-html-tag <:col :core :event :i18n
-                    align
-                    char
-                    charoff
-                    span
-                    valign
-                    width)
+  align
+  char
+  charoff
+  span
+  valign
+  width)
 
 (def-html-tag <:colgroup :core :event :i18n
-              align
-              char
-              charoff
-              span
-              valign
-              width)
+  align
+  char
+  charoff
+  span
+  valign
+  width)
 
 (def-html-tag <:dd :core :event :i18n)
 
 (def-html-tag <:del :core :event :i18n
-              cite
-              datetime)
+  cite
+  datetime)
 
 (def-html-tag <:dfn :core :event :i18n)
 
@@ -181,29 +181,29 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 (def-html-tag <:fieldset :core :event :i18n)
 
 (def-html-tag <:form :core :event :i18n
-              action
-              accept-charset
-              enctype
-              method
-              name
-              onreset
-              onsubmit
-              target)
+  action
+  accept-charset
+  enctype
+  method
+  name
+  onreset
+  onsubmit
+  target)
 
 (def-empty-html-tag <:frame :core
-                    frameborder
-                    longdesc
-                    marginheight
-                    marginwidth
-                    noresize
-                    scrolling
-                    src)
+  frameborder
+  longdesc
+  marginheight
+  marginwidth
+  noresize
+  scrolling
+  src)
 
 (def-html-tag <:frameset :core
-              cols
-              onload
-              olunload
-              rows)
+  cols
+  onload
+  olunload
+  rows)
 
 (def-html-tag <:h1 :core :event :i18n)
 
@@ -218,7 +218,7 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 (def-html-tag <:h6 :core :event :i18n)
 
 (def-html-tag <:head :i18n
-              profile)
+  profile)
 
 (def-empty-html-tag <:hr :core :event width align)
 
@@ -230,12 +230,12 @@ http://www.w3.org/TR/xhtml1/#guidelines"
               (xor prologue doctype)) () "You can only specify one of PROLOGUE or DOCTYPE")
   (when doctype
     (emit-code `(awhen ,doctype
-                 (princ "<!DOCTYPE html PUBLIC " *yaclml-stream*)
-                 (princ it *yaclml-stream*)
-                 (princ (strcat ">" ~%) *yaclml-stream*))))
+                  (princ "<!DOCTYPE html PUBLIC " *yaclml-stream*)
+                  (princ it *yaclml-stream*)
+                  (princ (strcat ">" ~%) *yaclml-stream*))))
   (when prologue
     (emit-code `(awhen ,prologue
-                 (princ it *yaclml-stream*))))
+                  (princ it *yaclml-stream*))))
   (emit-open-tag "html" (list* "dir" dir "lang" lang custom-attributes))
   (emit-body body)
   (emit-close-tag "html"))
@@ -243,150 +243,150 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 (def-html-tag <:i :core :event :i18n)
 
 (def-html-tag <:iframe :core
-              frameborder
-              longdesc
-              marginheight
-              marginwidth
-              name
-              scrolling
-              src
-	      width
-	      height)
+  frameborder
+  longdesc
+  marginheight
+  marginwidth
+  name
+  scrolling
+  src
+  width
+  height)
 
 (def-empty-html-tag <:img :core :event :i18n
-                    alt
-                    src
-                    height
-                    ismap
-                    longdesc
-                    usemap
-                    width)
+  alt
+  src
+  height
+  ismap
+  longdesc
+  usemap
+  width)
 
 (def-empty-html-tag <:input :core :event :i18n
-                    accept
-                    accesskey
-                    alt
-                    checked
-                    disabled
-                    maxlength
-                    multiple
-                    name
-                    onblur
-                    onchange
-                    onfocus
-                    onselect
-                    readonly
-                    size
-                    src
-                    tabindex
-                    type
-                    usemap
-                    value
-                    width
-                    height)
+  accept
+  accesskey
+  alt
+  checked
+  disabled
+  maxlength
+  multiple
+  name
+  onblur
+  onchange
+  onfocus
+  onselect
+  readonly
+  size
+  src
+  tabindex
+  type
+  usemap
+  value
+  width
+  height)
 
 (def-html-tag <:ins :core :event :i18n
-              cite
-              datetime)
+  cite
+  datetime)
 
 (def-html-tag <:kbd :core :event :i18n)
 
 (def-html-tag <:label :core :event :i18n
-              accesskey
-              for
-              onblur
-              onfocus)
+  accesskey
+  for
+  onblur
+  onfocus)
 
 (def-html-tag <:legend :core :event :i18n
-              accesskey)
+  accesskey)
 
 (def-html-tag <:li :core :event :i18n)
 
 (def-empty-html-tag <:link :core :event :i18n
-                    charset
-                    href
-                    hreflang
-                    media
-                    rel
-                    rev
-                    type
-                    integrity
-                    crossorigin)
+  charset
+  href
+  hreflang
+  media
+  rel
+  rev
+  type
+  integrity
+  crossorigin)
 
 (def-html-tag <:map :core :event :i18n
-              name)
+  name)
 
 (def-empty-html-tag <:meta :i18n
-                    content
-                    http-equiv
-                    name
-                    scheme)
+  content
+  http-equiv
+  name
+  scheme)
 
 (def-html-tag <:noframes :core :event :i18n)
 
 (def-html-tag <:noscript :core :event :i18n)
 
 (def-html-tag <:object :core :event :i18n
-              archive
-              classid
-              codebase
-              codetype
-              data
-              declare
-              height
-              name
-              standby
-              tabindex
-              type
-              usemap
-              width)
+  archive
+  classid
+  codebase
+  codetype
+  data
+  declare
+  height
+  name
+  standby
+  tabindex
+  type
+  usemap
+  width)
 
 (def-html-tag <:ol :core :event :i18n)
 
 (def-html-tag <:optgroup :core :event :i18n
-              label
-              disabled)
+  label
+  disabled)
 
 (def-html-tag <:option :core :event :i18n
-              disabled
-              label
-              selected
-              value)
+  disabled
+  label
+  selected
+  value)
 
 (def-html-tag <:p :core :event :i18n)
 
 (def-empty-html-tag <:param
-                    name
-                    id
-                    type
-                    value
-                    valuetype)
+  name
+  id
+  type
+  value
+  valuetype)
 
 (def-html-tag <:pre :core :event :i18n)
 
 (def-html-tag <:q :core :event :i18n
-              cite)
+  cite)
 
 (def-html-tag <:samp :core :event :i18n)
 
 (def-html-tag <:script
-              type
-              charset
-              defer
-              src
-              title
-              language)
+  type
+  charset
+  defer
+  src
+  title
+  language)
 
 (def-html-tag <:select :core :event :i18n
-              disabled
-              multiple
-              name
-              accesskey
-              onblur
-              onfocus
-              onchange
-              size
-              tabindex)
+  disabled
+  multiple
+  name
+  accesskey
+  onblur
+  onfocus
+  onchange
+  size
+  tabindex)
 
 (def-html-tag <:small :core :event :i18n)
 
@@ -395,81 +395,81 @@ http://www.w3.org/TR/xhtml1/#guidelines"
 (def-html-tag <:strong :core :event :i18n)
 
 (def-html-tag <:style :i18n
-              type
-              media
-              title)
+  type
+  media
+  title)
 
 (def-html-tag <:sub :core :event :i18n)
 
 (def-html-tag <:sup :core :event :i18n)
 
 (def-html-tag <:table :core :event :i18n
-              border
-              cellpadding
-              cellspacing
-              frame
-              summary
-              width)
+  border
+  cellpadding
+  cellspacing
+  frame
+  summary
+  width)
 
 (def-html-tag <:tbody :core :event :i18n
-              align
-              char
-              charoff
-              valign)
+  align
+  char
+  charoff
+  valign)
 
 (def-html-tag <:td :core :event :i18n
-              abbr
-              align
-              axis
-              char
-              charoff
-              colspan
-              headers
-              rowspan
-              scope
-              valign
-              width)
+  abbr
+  align
+  axis
+  char
+  charoff
+  colspan
+  headers
+  rowspan
+  scope
+  valign
+  width)
 
 (def-html-tag <:textarea :core :event :i18n
-              cols
-              rows
-              accesskey
-              disables
-              name
-              onblur
-              onchange
-              onfocus
-              onselect
-              readonly
-              tabindex)
+  cols
+  rows
+  accesskey
+  disables
+  name
+  onblur
+  onchange
+  onfocus
+  onselect
+  readonly
+  tabindex)
 
 (def-html-tag <:tfoot :core :event :i18n)
 
 (def-html-tag <:th :core :event :i18n
-              abbr
-              align
-              axis
-              char
-              charoff
-              colspan
-              headers
-              rowspan
-              scope
-              valign)
+  abbr
+  align
+  axis
+  char
+  charoff
+  colspan
+  headers
+  rowspan
+  scope
+  valign)
 
 (def-html-tag <:thead :core :event :i18n
-              align
-              char
-              charoff
-              valign)
+  align
+  char
+  charoff
+  valign)
 
 (def-html-tag <:title :i18n)
 
 (def-html-tag <:tr :core :event :i18n
-              align
-              char
-              charoff
-              valign)
+  align
+  char
+  charoff
+  valign)
 
 (def-html-tag <:tt :core :event :i18n)
 

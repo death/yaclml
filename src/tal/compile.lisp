@@ -75,7 +75,7 @@
 (defvar *tal-tag-handlers* '())
 
 (defparameter *uri-to-package*
-  (list 
+  (list
    (cons "http://common-lisp.net/project/bese/tal/core"
          (find-package :it.bese.yaclml.tal))
    (cons "http://common-lisp.net/project/bese/tal/params"
@@ -110,7 +110,7 @@
      ',tag-name))
 
 (def-special-environment tal-compile-environment ()
-  generator)
+                         generator)
 
 (defun |$ tal reader| (stream char)
   "The $ char reader for tal expressions."
@@ -130,13 +130,13 @@
     (set-macro-character #\$ #'|$ tal reader| nil *readtable*)
     (if implicit-progn-p
         (iter (with pos = 0)
-              (for (values obj new-pos) = (read-from-string expression nil nil :start pos))
-              (while obj)
-              (setf pos new-pos)
-              (collect obj into result)
-              (finally (return (if (> (length result) 1)
-                                   (cons 'progn result)
-                                   (first result)))))
+          (for (values obj new-pos) = (read-from-string expression nil nil :start pos))
+          (while obj)
+          (setf pos new-pos)
+          (collect obj into result)
+          (finally (return (if (> (length result) 1)
+                               (cons 'progn result)
+                               (first result)))))
         (read-from-string expression))))
 
 (defun parse-tal-attribute-value (value-string)
@@ -152,45 +152,45 @@
                    (set-macro-character #\$ #'|$ tal reader| nil *readtable*)
                    (read-delimited-list #\} val))))
           (loop
-             for char = (read-char val nil nil)
-             while char
-             do (case char
-                  (#\\ (let ((next-char (read-char val nil nil)))
-                         (if (null next-char)
-                             (error "Parse error in ~S. #\\ at end of string." value-string)
-                             (write-char next-char text))))
-                  (#\$ (let ((next-char (peek-char nil val nil nil nil)))
-                         (if (and next-char (char= #\{ next-char))
-                             (progn
-                               (read-char val nil nil nil)
-                               ;; first push the text uptil now onto parts
-                               (let ((up-to-now (get-output-stream-string text)))
-                                 (unless (string= "" up-to-now)
-                                   (push up-to-now parts)))
-                               ;; now push the form
-                               (push `(princ-to-string (progn ,@(read-tal-form))) 
-                                     parts))
-                             (write-char #\$ text))))
-                  (#\@ (let ((next-char (peek-char nil val nil nil)))
-                         (if (and next-char (char= #\{ next-char))
-                             (progn
-                               (read-char val nil nil nil)
-                               ;; first push the text uptil now onto parts
-                               (push (get-output-stream-string text) parts)
-                               ;; now push the form
-                               (let ((form (read-tal-form))
-                                     (stream (gensym))
-                                     (i (gensym)))
-                                 (push `(with-output-to-string (,stream)
-                                          (dolist (,i (progn ,@form))
-                                            (princ ,i ,stream)))
-                                       parts)))
-                             (write-char #\@ text))))
-                  (t
-                   (write-char char text)))
-               finally (let ((remaining-text (get-output-stream-string text)))
-                         (unless (string= "" remaining-text)
-                           (push remaining-text parts)))))))
+            for char = (read-char val nil nil)
+            while char
+            do (case char
+                 (#\\ (let ((next-char (read-char val nil nil)))
+                        (if (null next-char)
+                            (error "Parse error in ~S. #\\ at end of string." value-string)
+                            (write-char next-char text))))
+                 (#\$ (let ((next-char (peek-char nil val nil nil nil)))
+                        (if (and next-char (char= #\{ next-char))
+                            (progn
+                              (read-char val nil nil nil)
+                              ;; first push the text uptil now onto parts
+                              (let ((up-to-now (get-output-stream-string text)))
+                                (unless (string= "" up-to-now)
+                                  (push up-to-now parts)))
+                              ;; now push the form
+                              (push `(princ-to-string (progn ,@(read-tal-form)))
+                                    parts))
+                            (write-char #\$ text))))
+                 (#\@ (let ((next-char (peek-char nil val nil nil)))
+                        (if (and next-char (char= #\{ next-char))
+                            (progn
+                              (read-char val nil nil nil)
+                              ;; first push the text uptil now onto parts
+                              (push (get-output-stream-string text) parts)
+                              ;; now push the form
+                              (let ((form (read-tal-form))
+                                    (stream (gensym))
+                                    (i (gensym)))
+                                (push `(with-output-to-string (,stream)
+                                         (dolist (,i (progn ,@form))
+                                           (princ ,i ,stream)))
+                                      parts)))
+                            (write-char #\@ text))))
+                 (t
+                  (write-char char text)))
+            finally (let ((remaining-text (get-output-stream-string text)))
+                      (unless (string= "" remaining-text)
+                        (push remaining-text parts)))))))
     ;; done parsing, parts now contains everything to put in the
     ;; list, but in reverse order.
     (case (length parts)
@@ -213,12 +213,12 @@
   "Transforms the lxml tree FORM into common lisp code (a series
   of calls to tag macros)."
   (flet ((find-attribute-handlers (attributes)
-	   (loop 
-	      for (key) on attributes by #'cddr
-	      for handler = (assoc key *tal-attribute-handlers* :test #'eql)
-	      when handler
-	      do (return-from transform-lxml-form
-		   (funcall (cdr handler) form))))
+	   (loop
+	     for (key) on attributes by #'cddr
+	     for handler = (assoc key *tal-attribute-handlers* :test #'eql)
+	     when handler
+	     do (return-from transform-lxml-form
+		  (funcall (cdr handler) form))))
 	 (find-tag-handler (tag-name)
 	   (dolist* ((name . handler) *tal-tag-handlers*)
              (when (eql name tag-name)
@@ -228,11 +228,11 @@
 	   (unless (member tag-name '(:comment :xml))
 	     `(,tag-name
 	       ,@(loop
-		    for (key value) on attributes by #'cddr
-		    nconc (list (intern (symbol-name key) :keyword)
-				(if (stringp value)
-				    (parse-tal-attribute-value value)
-				    value)))
+		   for (key value) on attributes by #'cddr
+		   nconc (list (intern (symbol-name key) :keyword)
+			       (if (stringp value)
+				   (parse-tal-attribute-value value)
+				   value)))
 	       ,@(transform-lxml-tree body)))))
     (if (stringp form)
 	`(<:as-is ,form)
@@ -247,7 +247,7 @@
 	      ;; attributes, must be a "regular" yaclml tag.
 	      (handle-regular-tag tag-name attributes body))
 	    (error "Badly formatted YACLML: ~S." form)))))
-  
+
 (defun compile-tal-string-to-lambda (string &optional (expression-package *package*))
   "Returns the source code for the tal function form the tal text STRING."
   (bind-tal-compile-environment ((generator (gensym)))
@@ -267,15 +267,15 @@
     (compile-tal-string (read-tal-file-into-string pathname) expression-package)))
 
 ;; Copyright (c) 2002-2005, Edward Marco Baringer
-;; All rights reserved. 
-;; 
+;; All rights reserved.
+;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions are
 ;; met:
-;; 
+;;
 ;;  - Redistributions of source code must retain the above copyright
 ;;    notice, this list of conditions and the following disclaimer.
-;; 
+;;
 ;;  - Redistributions in binary form must reproduce the above copyright
 ;;    notice, this list of conditions and the following disclaimer in the
 ;;    documentation and/or other materials provided with the distribution.
@@ -283,7 +283,7 @@
 ;;  - Neither the name of Edward Marco Baringer, nor BESE, nor the names
 ;;    of its contributors may be used to endorse or promote products
 ;;    derived from this software without specific prior written permission.
-;; 
+;;
 ;; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
 ;; "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
 ;; LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
