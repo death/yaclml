@@ -320,7 +320,8 @@ http://www.w3.org/TR/xhtml1/#guidelines"
   content
   http-equiv
   name
-  scheme)
+  scheme
+  charset)
 
 (def-html-tag <:noframes :core :event :i18n)
 
