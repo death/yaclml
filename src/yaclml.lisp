@@ -139,7 +139,7 @@
   "Emit to the current yaclml-code CODE. This means that whatever
    CODE is it will be run, and it's result will be ignored, at
    runtime."
-  (setf %yaclml-code% (nconc forms %yaclml-code%)))
+  (setf %yaclml-code% (append forms %yaclml-code%)))
 
 (defmacro emit-attribute (name value)
   (rebinding (value)
