@@ -275,7 +275,9 @@ http://www.w3.org/TR/xhtml1/#guidelines"
   onchange
   onfocus
   onselect
+  placeholder
   readonly
+  required
   size
   src
   tabindex
