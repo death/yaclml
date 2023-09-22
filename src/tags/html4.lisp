@@ -268,24 +268,33 @@ http://www.w3.org/TR/xhtml1/#guidelines"
   alt
   checked
   disabled
+  max
   maxlength
+  min
   multiple
   name
   onblur
   onchange
   onfocus
   onselect
+  oninput
   placeholder
   readonly
   required
   size
   src
+  step
   tabindex
   type
   usemap
   value
   width
   height)
+
+(def-html-tag <:output :core :event :i18n
+  for
+  form
+  name)
 
 (def-html-tag <:ins :core :event :i18n
   cite
