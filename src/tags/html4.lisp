@@ -18,14 +18,46 @@
     (with-collector (attrs)
       (dolist (attr attributes)
         (case attr
-          (:core  (attrs 'class 'id 'style 'title))
-          (:i18n  (attrs 'dir 'lang))
-          (:event (attrs 'onclick 'ondblclick
-                         'onkeydown 'onkeypress
-                         'onkeyup 'onmousedown
-                         'onmousemove 'onmouseout
-                         'onmouseover 'onmouseup))
-          (t (attrs attr))))
+          (:core
+           (attrs 'class 'id 'style 'title)
+           ;; HTMX attributes
+           (attrs 'hx-get 'hx-post 'hx-on 'hx-push-url
+                  'hx-select 'hx-select-oob 'hx-swap
+                  'hx-swap-oob 'hx-target 'hx-trigger
+                  'hx-vals 'hx-boost 'hx-confirm
+                  'hx-delete 'hx-disable 'hx-disabled-elt
+                  'hx-disinherit 'hx-encoding 'hx-ext
+                  'hx-headers 'hx-history 'hx-history-elt
+                  'hx-include 'hx-indicator 'hx-params
+                  'hx-patch 'hx-preserve 'hx-prompt
+                  'hx-put 'hx-replace-url 'hx-request
+                  'hx-sse 'hx-sync 'hx-validate 'hx-vars
+                  'hx-ws)
+           (attrs 'data-hx-get 'data-hx-post 'data-hx-on
+                  'data-hx-push-url 'data-hx-select
+                  'data-hx-select-oob 'data-hx-swap
+                  'data-hx-swap-oob 'data-hx-target
+                  'data-hx-trigger 'data-hx-vals 'data-hx-boost
+                  'data-hx-confirm 'data-hx-delete
+                  'data-hx-disable 'data-hx-disabled-elt
+                  'data-hx-disinherit 'data-hx-encoding
+                  'data-hx-ext 'data-hx-headers 'data-hx-history
+                  'data-hx-history-elt 'data-hx-include
+                  'data-hx-indicator 'data-hx-params
+                  'data-hx-patch 'data-hx-preserve
+                  'data-hx-prompt 'data-hx-put 'data-hx-replace-url
+                  'data-hx-request 'data-hx-sse 'data-hx-sync
+                  'data-hx-validate 'data-hx-vars 'data-hx-ws))
+          (:i18n
+           (attrs 'dir 'lang))
+          (:event
+           (attrs 'onclick 'ondblclick
+                  'onkeydown 'onkeypress
+                  'onkeyup 'onmousedown
+                  'onmousemove 'onmouseout
+                  'onmouseover 'onmouseup))
+          (t
+           (attrs attr))))
       (attrs))))
 
 (defmacro def-empty-html-tag (name &rest attributes)
